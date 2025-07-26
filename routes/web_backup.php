@@ -12,7 +12,6 @@ Route::post('/draft/register', [WorkshopRegistrationController::class, 'register
 Route::middleware('admin.passkey')->group(function () {
     Route::get('/admin/registrations', [WorkshopRegistrationController::class, 'showRegistrations'])->name('workshop.admin.registrations');
     Route::get('/admin/export', [WorkshopRegistrationController::class, 'exportToExcel'])->name('workshop.admin.export');
-    Route::post('/admin/bulk-delete', [WorkshopRegistrationController::class, 'bulkDelete'])->name('workshop.admin.bulk-delete');
     
     // CRUD operations for registrations
     Route::get('/admin/registrations/create', [WorkshopRegistrationController::class, 'create'])->name('workshop.admin.create');
@@ -28,3 +27,7 @@ Route::get('/admin/logout', function () {
     session()->forget('admin_authenticated');
     return redirect()->route('workshop.landing')->with('message', 'Logged out successfully');
 })->name('workshop.admin.logout');
+
+
+Route::get('/draft', [WorkshopRegistrationController::class, 'showDraft'])->name('draft');
+Route::post('/draft/register', [WorkshopRegistrationController::class, 'registerFromDraft'])->name('draft.register');

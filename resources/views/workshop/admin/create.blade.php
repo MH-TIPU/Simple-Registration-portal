@@ -167,19 +167,6 @@
                 @csrf
                 
                 <div class="form-group">
-                    <label for="name">Full Name <span style="color: red;">*</span></label>
-                    <input type="text" 
-                           id="name" 
-                           name="name" 
-                           value="{{ old('name') }}" 
-                           required 
-                           placeholder="Enter full name">
-                    @error('name')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <div class="form-group">
                     <label for="phone_number">Phone Number <span style="color: red;">*</span></label>
                     <input type="tel" 
                            id="phone_number" 
@@ -188,32 +175,6 @@
                            required 
                            placeholder="Enter phone number">
                     @error('phone_number')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address <span style="color: red;">*</span></label>
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           value="{{ old('email') }}" 
-                           required 
-                           placeholder="Enter email address">
-                    @error('email')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
-                
-                <div class="form-group">
-                    <label for="enterprise_name">College/Organization <span style="color: red;">*</span></label>
-                    <input type="text" 
-                           id="enterprise_name" 
-                           name="enterprise_name" 
-                           value="{{ old('enterprise_name') }}" 
-                           required 
-                           placeholder="Enter college or organization name">
-                    @error('enterprise_name')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>

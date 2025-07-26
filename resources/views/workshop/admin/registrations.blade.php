@@ -307,6 +307,9 @@
             <a href="{{ route('workshop.admin.export') }}" class="btn btn-primary">
                 📊 Export to Excel
             </a>
+            <button type="button" id="bulkDeleteBtn" class="btn btn-danger" style="display: none;" onclick="bulkDelete()">
+                🗑️ Delete Selected
+            </button>
             <a href="{{ route('workshop.landing') }}" class="btn btn-secondary">
                 🏠 Back to Landing
             </a>
@@ -317,19 +320,23 @@
         </div>
         
         <div class="search-container">
-            <input type="text" id="searchInput" class="search-box" placeholder="Search registrations by name, email, or organization...">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search registrations by phone number...">
         </div>
         
         <div class="table-container">
             @if($registrations->count() > 0)
+                <form id="bulkDeleteForm" method="POST" action="{{ route('workshop.admin.bulk-delete') }}">
+                    @csrf
+                </form>
+                
                 <table class="table" id="registrationsTable">
                     <thead>
                         <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
                             <th>ID</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>College/Organization</th>
+                            <th>Phone Number</th>
                             <th>Registration Date</th>
                             <th>Actions</th>
                         </tr>
@@ -337,11 +344,11 @@
                     <tbody>
                         @foreach($registrations as $registration)
                             <tr>
+                                <td>
+                                    <input type="checkbox" name="selected_ids[]" value="{{ $registration->id }}" class="registration-checkbox" form="bulkDeleteForm" onchange="toggleBulkDeleteBtn()">
+                                </td>
                                 <td><strong>#{{ $registration->id }}</strong></td>
-                                <td>{{ $registration->name }}</td>
                                 <td>{{ $registration->phone_number }}</td>
-                                <td class="email">{{ $registration->email }}</td>
-                                <td>{{ $registration->enterprise_name }}</td>
                                 <td class="date">{{ $registration->registered_at->format('M j, Y g:i A') }}</td>
                                 <td>
                                     <div class="action-buttons">
@@ -383,19 +390,56 @@
                 const cells = row.getElementsByTagName('td');
                 let match = false;
                 
-                // Search in name, email, and organization columns
-                const searchableColumns = [1, 3, 4]; // name, email, organization
+                // Search in phone number column only (index 2 because of checkbox column)
+                const phoneCell = cells[2]; // phone number column
                 
-                for (let j of searchableColumns) {
-                    if (cells[j] && cells[j].textContent.toLowerCase().includes(searchTerm)) {
-                        match = true;
-                        break;
-                    }
+                if (phoneCell && phoneCell.textContent.toLowerCase().includes(searchTerm)) {
+                    match = true;
                 }
                 
                 row.style.display = match ? '' : 'none';
             }
         });
+
+        // Bulk delete functionality
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.registration-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            toggleBulkDeleteBtn();
+        }
+
+        function toggleBulkDeleteBtn() {
+            const checkboxes = document.querySelectorAll('.registration-checkbox:checked');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            
+            if (checkboxes.length > 0) {
+                bulkDeleteBtn.style.display = 'inline-flex';
+                bulkDeleteBtn.textContent = `🗑️ Delete Selected (${checkboxes.length})`;
+            } else {
+                bulkDeleteBtn.style.display = 'none';
+            }
+        }
+
+        function bulkDelete() {
+            const checkboxes = document.querySelectorAll('.registration-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('Please select at least one registration to delete.');
+                return;
+            }
+            
+            const count = checkboxes.length;
+            const confirmMessage = `Are you sure you want to delete ${count} registration${count > 1 ? 's' : ''}? This action cannot be undone.`;
+            
+            if (confirm(confirmMessage)) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        }
     </script>
 </body>
 </html>

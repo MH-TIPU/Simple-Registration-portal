@@ -162,25 +162,6 @@
         <form action="{{ route('workshop.register.submit') }}" method="POST">
             @csrf
             
-            <!-- Name Field -->
-            <div class="form-group">
-                <label for="name" class="form-label">
-                    Full Name <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
-                    class="form-input {{ $errors->has('name') ? 'error' : '' }}"
-                    value="{{ old('name') }}"
-                    placeholder="Enter your full name"
-                    required
-                >
-                @if($errors->has('name'))
-                    <div class="error-message">{{ $errors->first('name') }}</div>
-                @endif
-            </div>
-            
             <!-- Phone Number Field -->
             <div class="form-group">
                 <label for="phone_number" class="form-label">
@@ -197,44 +178,6 @@
                 >
                 @if($errors->has('phone_number'))
                     <div class="error-message">{{ $errors->first('phone_number') }}</div>
-                @endif
-            </div>
-            
-            <!-- Email Field -->
-            <div class="form-group">
-                <label for="email" class="form-label">
-                    Email Address <span class="required">*</span>
-                </label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    class="form-input {{ $errors->has('email') ? 'error' : '' }}"
-                    value="{{ old('email') }}"
-                    placeholder="Enter your email"
-                    required
-                >
-                @if($errors->has('email'))
-                    <div class="error-message">{{ $errors->first('email') }}</div>
-                @endif
-            </div>
-            
-            <!-- Enterprise Name Field -->
-            <div class="form-group">
-                <label for="enterprise_name" class="form-label">
-                    Institute/Organization <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    id="enterprise_name" 
-                    name="enterprise_name" 
-                    class="form-input {{ $errors->has('enterprise_name') ? 'error' : '' }}"
-                    value="{{ old('enterprise_name') }}"
-                    placeholder="Enter your Institute or organization"
-                    required
-                >
-                @if($errors->has('enterprise_name'))
-                    <div class="error-message">{{ $errors->first('enterprise_name') }}</div>
                 @endif
             </div>
             

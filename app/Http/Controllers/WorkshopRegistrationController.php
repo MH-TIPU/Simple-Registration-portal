@@ -9,9 +9,30 @@ use Carbon\Carbon;
 
 class WorkshopRegistrationController extends Controller
 {
-    public function index()
+    public function showDraft()
     {
         return view('workshop.landing');
+    }
+
+    public function registerFromDraft(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone_number' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Create the registration with only phone number
+        $registration = WorkshopRegistration::create([
+            'phone_number' => $request->phone_number,
+            'registered_at' => now(),
+        ]);
+
+        return redirect()->back()->with('registered', true);
     }
 
     public function showForm()
@@ -22,24 +43,18 @@ class WorkshopRegistrationController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
-            'email' => 'required|email|unique:workshop_registrations,email',
-            'enterprise_name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            ->withErrors($validator)
+            ->withInput();
         }
 
-        // Create the registration
+        // Create the registration with only phone number
         $registration = WorkshopRegistration::create([
-            'name' => $request->name,
             'phone_number' => $request->phone_number,
-            'email' => $request->email,
-            'enterprise_name' => $request->enterprise_name,
             'registered_at' => now(),
         ]);
 
@@ -77,17 +92,14 @@ class WorkshopRegistrationController extends Controller
         $callback = function() use ($registrations) {
             $file = fopen('php://output', 'w');
             
-            // Add CSV headers
-            fputcsv($file, ['ID', 'Name', 'Phone Number', 'Email', 'College/Organization', 'Registration Date']);
+            // Add CSV headers for phone-only registration
+            fputcsv($file, ['ID', 'Phone Number', 'Registration Date']);
             
             // Add data rows
             foreach ($registrations as $registration) {
                 fputcsv($file, [
                     $registration->id,
-                    $registration->name,
                     $registration->phone_number,
-                    $registration->email,
-                    $registration->enterprise_name,
                     $registration->registered_at->format('Y-m-d H:i:s')
                 ]);
             }
@@ -108,10 +120,7 @@ class WorkshopRegistrationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
-            'email' => 'required|email|unique:workshop_registrations,email',
-            'enterprise_name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -121,10 +130,7 @@ class WorkshopRegistrationController extends Controller
         }
 
         WorkshopRegistration::create([
-            'name' => $request->name,
             'phone_number' => $request->phone_number,
-            'email' => $request->email,
-            'enterprise_name' => $request->enterprise_name,
             'registered_at' => now(),
         ]);
 
@@ -149,10 +155,7 @@ class WorkshopRegistrationController extends Controller
         $registration = WorkshopRegistration::findOrFail($id);
         
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
-            'email' => 'required|email|unique:workshop_registrations,email,' . $id,
-            'enterprise_name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -162,10 +165,7 @@ class WorkshopRegistrationController extends Controller
         }
 
         $registration->update([
-            'name' => $request->name,
             'phone_number' => $request->phone_number,
-            'email' => $request->email,
-            'enterprise_name' => $request->enterprise_name,
         ]);
 
         return redirect()->route('workshop.admin.registrations')
@@ -179,5 +179,36 @@ class WorkshopRegistrationController extends Controller
 
         return redirect()->route('workshop.admin.registrations')
             ->with('success', 'Registration deleted successfully!');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $selectedIds = $request->input('selected_ids', []);
+        
+        if (empty($selectedIds)) {
+            return redirect()->route('workshop.admin.registrations')
+                ->with('error', 'No registrations selected for deletion.');
+        }
+        
+        // Validate that all IDs are integers
+        $validIds = array_filter($selectedIds, function($id) {
+            return is_numeric($id) && $id > 0;
+        });
+        
+        if (empty($validIds)) {
+            return redirect()->route('workshop.admin.registrations')
+                ->with('error', 'Invalid registration IDs provided.');
+        }
+        
+        try {
+            $deletedCount = WorkshopRegistration::whereIn('id', $validIds)->delete();
+            
+            return redirect()->route('workshop.admin.registrations')
+                ->with('success', "Successfully deleted {$deletedCount} registration(s)!");
+                
+        } catch (\Exception $e) {
+            return redirect()->route('workshop.admin.registrations')
+                ->with('error', 'An error occurred while deleting registrations. Please try again.');
+        }
     }
 }

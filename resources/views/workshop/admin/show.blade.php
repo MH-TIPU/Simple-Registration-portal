@@ -187,23 +187,8 @@
         
         <div class="details-container">
             <div class="detail-group">
-                <div class="detail-label">Full Name</div>
-                <div class="detail-value">{{ $registration->name }}</div>
-            </div>
-            
-            <div class="detail-group">
                 <div class="detail-label">Phone Number</div>
                 <div class="detail-value">{{ $registration->phone_number }}</div>
-            </div>
-            
-            <div class="detail-group">
-                <div class="detail-label">Email Address</div>
-                <div class="detail-value email-value">{{ $registration->email }}</div>
-            </div>
-            
-            <div class="detail-group">
-                <div class="detail-label">College/Organization</div>
-                <div class="detail-value">{{ $registration->enterprise_name }}</div>
             </div>
             
             <div class="detail-group">

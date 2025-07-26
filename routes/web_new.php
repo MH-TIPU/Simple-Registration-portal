@@ -12,7 +12,6 @@ Route::post('/draft/register', [WorkshopRegistrationController::class, 'register
 Route::middleware('admin.passkey')->group(function () {
     Route::get('/admin/registrations', [WorkshopRegistrationController::class, 'showRegistrations'])->name('workshop.admin.registrations');
     Route::get('/admin/export', [WorkshopRegistrationController::class, 'exportToExcel'])->name('workshop.admin.export');
-    Route::post('/admin/bulk-delete', [WorkshopRegistrationController::class, 'bulkDelete'])->name('workshop.admin.bulk-delete');
     
     // CRUD operations for registrations
     Route::get('/admin/registrations/create', [WorkshopRegistrationController::class, 'create'])->name('workshop.admin.create');
