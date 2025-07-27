@@ -360,14 +360,66 @@
 
         <!-- Collaboration Section -->
         <div class="collaboration-section">
-            <h4 class="collaboration-title">সহযোগিতায়</h4>
-            <div class="collaboration-logos">
-                <img src="{{ asset('img/GF_LOGO.png') }}" alt="Gates Foundation Logo"
-                    style="height: 36px; width: auto;" />
-                <img src="{{ asset('img/bdosn_logo.jpg') }}" alt="BdOSN Logo" style="height: 60px; width: auto;" />
+            <div class="content-grid" style="gap: 2rem; margin-bottom: 0;">
+                <!-- সহযোগিতায় -->
+                <div>
+                    <h4 class="collaboration-title" style="text-align: center;">সহযোগিতায়</h4>
+                    <div class="collaboration-logos" style="justify-content: center;">
+                        <img src="{{ asset('img/GF_LOGO.png') }}" alt="Gates Foundation Logo"
+                            class="collab-logo"
+                            style="height: 70px; max-width: auto; width: 100%; object-fit: contain;" />
+                    </div>
+                </div>
+                <!-- সহযোগিতায় (লার্নিং পার্টনার) -->
+                <div>
+                    <h4 class="collaboration-title" style="text-align: center;">লার্নিং পার্টনার</h4>
+                    <div class="collaboration-logos" style="justify-content: center;">
+                        <img src="{{ asset('img/bdosn_logo.jpg') }}" alt="BdOSN Logo"
+                            class="collab-logo"
+                            style="height: 70px; max-width: auto; width: 100%; object-fit: contain;"
+                            id="bdosn-logo" />
+                        <style>
+                            @media (max-width: 768px) {
+                                #bdosn-logo {
+                                    width: 60% !important;
+                                    max-width: 60% !important;
+                                    height: auto !important;
+                                }
+                            }
+                        </style>
+                    </div>
+                </div>
             </div>
-
         </div>
+        <style>
+            @media (max-width: 768px) {
+                .collaboration-section .content-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 1.2rem !important;
+                }
+            }
+        </style>
+        <style>
+            @media (max-width: 768px) {
+            .collaboration-section {
+                padding: 1.2rem !important;
+            }
+            .collaboration-logos {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            .collab-logo {
+                max-width: 90vw !important;
+                height: auto !important;
+            }
+            }
+            @media (max-width: 480px) {
+            .collab-logo {
+                max-width: 80vw !important;
+                height: auto !important;
+            }
+            }
+        </style>
 
         <a href="{{ route('workshop.admin.registrations') }}" class="admin-link" style="color: black;">Admin
         </a>
